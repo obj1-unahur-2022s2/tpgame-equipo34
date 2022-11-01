@@ -16,13 +16,17 @@ object juego{
 		game.height(12)
 		game.addVisual(suelo)
 		game.addVisual(auto)
+		game.addVisual(vidas)
+		game.addVisual(miniAuto)
+		game.onTick(6000,"moverMiniAuto",{miniAuto.mover()})
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
-		game.whenCollideDo(auto,{ elemento => elemento.chocar()})
+		game.whenCollideDo(auto,{elemento => elemento.chocar()})
 	}
 	method terminar(){
 		game.addVisual(gameOver)
 		obstaculos.forEach({o => o.detener()})
+		game.removeTickEvent("moverMiniAuto")
 		game.removeTickEvent("nuevoObstaculo")
 		game.removeTickEvent("nuevaDecoracion")
 		game.removeTickEvent("nuevoObstaculoIzq")
@@ -95,8 +99,12 @@ class Obstaculo {
 			self.sacar()
 	}
 	method chocar(){
+		auto.chocar()
+		vidas.actualizar()
+		if(not auto.estaVivo()){
 		self.sacar()
 		juego.terminar()
+		}
 	}
     method sacar(){
 		game.removeVisual(self)
@@ -123,8 +131,12 @@ class ObstaculoIzquierda {
 			position = position.left(1)
 	}
 	method chocar(){
+		auto.chocar()
+		vidas.actualizar()
+		if(not auto.estaVivo()){
 		self.sacar()
 		juego.terminar()
+		}
 	}
     method sacar(){
 		game.removeVisual(self)
@@ -151,8 +163,12 @@ class ObstaculoDerecha {
 			position = position.right(1)
 	}
 	method chocar(){
+		auto.chocar()
+		vidas.actualizar()
+		if(not auto.estaVivo()){
 		self.sacar()
 		juego.terminar()
+		}
 	}
     method sacar(){
 		game.removeVisual(self)
@@ -168,12 +184,17 @@ object suelo{
 }
 
 object auto {
-	var vivo = 3
+	var property vivo = true
+	var property vidaRestantes = 50
 	var property position = game.at(6,0)
 	
-	method estaVivo(){return vivo > 0}
+	method estaVivo(){
+		if(vidaRestantes <= 0){vivo = false}
+		else{vivo = true}
+		return vivo
+	}
 	method image(){
-	if(vivo > 0){return "auto.png"}
+	if(vivo){return "auto.png"}
 	else{return "explocion.png"}
 	}
 	method moveteDerecha(){
@@ -185,7 +206,22 @@ object auto {
 		else{self.position(self.position().left(1))}
 	}
 	method chocar(){
-		game.say(self,"¡Boom!")
-		vivo -= 1
+		vidaRestantes = vidaRestantes - 1
 	}
+}
+
+object miniAuto {
+	var property position = self.positionInicial()
+	
+	method image(){return "miniAuto.png"}
+	method mover(){position = position.up(1)}
+	method positionInicial(){return game.at(12,0)}
+}
+
+object vidas {
+	var vidas = auto.vidaRestantes()
+	
+	method text() = "Vida restante:" + vidas.toString()
+	method position() = game.at(1, game.height()-1)
+	method actualizar(){vidas = auto.vidaRestantes()}
 }
