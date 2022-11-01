@@ -17,6 +17,7 @@ object juego{
 		game.addVisual(suelo)
 		game.addVisual(auto)
 		game.addVisual(vidas)
+		game.addVisual(miniMapa)
 		game.addVisual(miniAuto)
 		game.onTick(6000,"moverMiniAuto",{miniAuto.mover()})
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
@@ -181,6 +182,11 @@ class ObstaculoDerecha {
 object suelo{
 	method position() = game.origin()
 	method image() = "suelo.png"
+}
+
+object miniMapa{
+	method position() = game.at(12,0)
+	method image() = "miniMapa.png"
 }
 
 object auto {
