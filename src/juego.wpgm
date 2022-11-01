@@ -3,7 +3,5 @@ import auto.*
 
 program juego {
 	juego.configurar()
-	juego.iniciar()
 	game.start()
-
 }

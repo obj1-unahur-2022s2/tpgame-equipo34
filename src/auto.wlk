@@ -3,28 +3,51 @@ import wollok.game.*
 const velocidad = 250
 
 
-object juego{
+object juego{ 	
+	const property obstaculos = []
 	
 	method configurar(){
-		game.width(12)
+		game.title("Road Fighter")
+		game.onTick(3000,"nuevoObstaculo",{self.generarObstaculo()})
+		game.onTick(500,"nuevaDecoracion",{self.generarDecoracion()})
+		game.onTick(3000,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
+		game.onTick(3000,"nuevoObstaculoDer",{self.generarObstaculoDer()})
+		game.width(13)
 		game.height(12)
 		game.addVisual(suelo)
 		game.addVisual(auto)
-		game.addVisual(obstaculo)
-		game.addVisual(obstaculo2)
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
-		game.onCollideDo(auto,{ obstaculo => obstaculo.chocar()})
-	}
-	method iniciar(){
-		obstaculo.iniciar()
-		obstaculo2.iniciar()
+		game.whenCollideDo(auto,{ elemento => elemento.chocar()})
 	}
 	method terminar(){
 		game.addVisual(gameOver)
-		obstaculo.detener()
-		obstaculo2.detener()
+		obstaculos.forEach({o => o.detener()})
+		game.removeTickEvent("nuevoObstaculo")
+		game.removeTickEvent("nuevaDecoracion")
+		game.removeTickEvent("nuevoObstaculoIzq")
+		game.removeTickEvent("nuevoObstaculoDer")
 		auto.chocar()
+	}
+	method generarObstaculo(){
+		const obsta = new Obstaculo()
+		obsta.iniciar()
+		obstaculos.add(obsta)
+	}
+	method generarDecoracion(){
+		const deco = new Decoracion()
+		deco.iniciar()
+		obstaculos.add(deco)
+	}
+	method generarObstaculoIzq(){
+		const obstaIzq = new ObstaculoIzquierda()
+		obstaIzq.iniciar()
+		obstaculos.add(obstaIzq)
+	}
+	method generarObstaculoDer(){
+		const obstaDer = new ObstaculoDerecha()
+		obstaDer.iniciar()
+		obstaculos.add(obstaDer)
 	}
 }
 
@@ -33,54 +56,106 @@ object gameOver {
 	method text() = "GAME OVER"
 }
 
-object decoracion {
+class Decoracion {
 	var position = self.posicionInicial()
 	
-	method posicionInicial() = game.at(6,1)
-}
-
-object obstaculo {
-	var position = self.posicionInicial()
-
-	method image() = "autoObstaculo.png"
+	method image() = "arbolDecoracion.png"
 	method position() = position
-	method posicionInicial() = game.at(6,11)
+	method posicionInicial() = game.at(0,11)
 	method iniciar(){
 		position = self.posicionInicial()
-		game.onTick(velocidad,"moverObstaculo",{self.mover()})
+		game.addVisual(self)
+		game.onTick(velocidad,"moverDecoracion",{self.mover()})
 	}
 	method mover(){
 		position = position.down(1)
 		if (position.y() == -1)
-			position = self.posicionInicial()
+			game.removeVisual(self)
+	}
+	method detener(){
+		game.removeTickEvent("moverDecoracion")
+	}
+}
+
+
+class Obstaculo {
+	var position = self.posicionInicial()
+
+	method image() = "autoObstaculo.png"
+	method position() = position
+	method posicionInicial() = game.at((2..9).anyOne(),11)
+	method iniciar(){
+		position = self.posicionInicial()
+		game.addVisual(self)
+		game.onTick(velocidad,"nuevoObstaculo",{self.mover()})
+	}
+	method mover(){
+		position = position.down(1)
+		if (position.y() == -1)
+			self.sacar()
 	}
 	method chocar(){
+		self.sacar()
 		juego.terminar()
+	}
+    method sacar(){
+		game.removeVisual(self)
+	}
+	method detener(){
+		game.removeTickEvent("nuevoObstaculo")
+	}
+}
+
+class ObstaculoIzquierda {
+	var position = self.posicionInicial()
+
+	method image() = "autoObstaculo.png"
+	method position() = position
+	method posicionInicial() = game.at((3..9).anyOne(),11)
+	method iniciar(){
+		position = self.posicionInicial()
+		game.addVisual(self)
+		game.onTick(velocidad,"moverObstaculo",{self.mover()})
+	}
+	method mover(){
+		position = position.down(1)
+		if (position.y() == 7)
+			position = position.left(1)
+	}
+	method chocar(){
+		self.sacar()
+		juego.terminar()
+	}
+    method sacar(){
+		game.removeVisual(self)
 	}
     method detener(){
 		game.removeTickEvent("moverObstaculo")
 	}
 }
 
-object obstaculo2 {
+class ObstaculoDerecha {
 	var position = self.posicionInicial()
 
 	method image() = "autoObstaculo.png"
 	method position() = position
-	method posicionInicial() = game.at(4,11)
+	method posicionInicial() = game.at((2..8).anyOne(),11)
 	method iniciar(){
 		position = self.posicionInicial()
+		game.addVisual(self)
 		game.onTick(velocidad,"moverObstaculo",{self.mover()})
 	}
 	method mover(){
 		position = position.down(1)
-		if (position.y() == 6)
-			position = position.left(1)
-		if (position.y() == -1)
-			position = self.posicionInicial()
+		if (position.y() == 7)
+			position = position.right(1)
 	}
 	method chocar(){
+		self.sacar()
 		juego.terminar()
+	}
+    method sacar(){
+		game.removeVisual(self)
 	}
     method detener(){
 		game.removeTickEvent("moverObstaculo")
@@ -93,15 +168,24 @@ object suelo{
 }
 
 object auto {
-	var vivo = true
+	var vivo = 3
 	var property position = game.at(6,0)
 	
-	method estaVivo(){return vivo}
-	method image() = "auto.png"
-	method moveteDerecha(){self.position(self.position().right(1))}
-	method moveteIzquierda(){self.position(self.position().left(1))}
+	method estaVivo(){return vivo > 0}
+	method image(){
+	if(vivo > 0){return "auto.png"}
+	else{return "explocion.png"}
+	}
+	method moveteDerecha(){
+		if(position == game.at(9,0)){self.position(self.position().left(1))}
+		else{self.position(self.position().right(1))}
+	}
+	method moveteIzquierda(){
+		if(position == game.at(2,0)){self.position(self.position().right(1))}
+		else{self.position(self.position().left(1))}
+	}
 	method chocar(){
 		game.say(self,"¡Boom!")
-		vivo = false
+		vivo -= 1
 	}
 }
