@@ -11,7 +11,7 @@ object juego{
 		game.onTick(3000,"nuevoObstaculo",{self.generarObstaculo()})
 		game.onTick(500,"nuevaDecoracion",{self.generarDecoracion()})
 		game.onTick(3000,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
-		game.onTick(3000,"nuevoObstaculoDer",{self.generarObstaculoDer()})
+		game.onTick(8900,"nuevoObstaculoDer",{self.generarObstaculoDer()})
 		game.width(13)
 		game.height(12)
 		game.addVisual(suelo)
@@ -149,7 +149,7 @@ class ObstaculoIzquierda {
 class ObstaculoDerecha {
 	var position = self.posicionInicial()
 
-	method image() = "autoObstaculo.png"
+	method image() = "camion.png"
 	method position() = position
 	method posicionInicial() = game.at((2..8).anyOne(),11)
 	method iniciar(){
@@ -158,7 +158,7 @@ class ObstaculoDerecha {
 		game.onTick(velocidad,"moverObstaculo",{self.mover()})
 	}
 	method mover(){
-		position = position.down(1)
+		position = position.down(0.5)
 		if (position.y() == 7)
 			position = position.right(1)
 	}
@@ -213,7 +213,7 @@ object auto {
 object miniAuto {
 	var property position = self.positionInicial()
 	
-	method image(){return "miniAuto.png"}
+	method image(){return "miniCar.png"}
 	method mover(){position = position.up(1)}
 	method positionInicial(){return game.at(12,0)}
 }
