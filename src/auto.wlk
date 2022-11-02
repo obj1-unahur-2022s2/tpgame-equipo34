@@ -8,19 +8,21 @@ object juego{
 	
 	method configurar(){
 		game.title("Road Fighter")
-		game.onTick(3000,"nuevoObstaculo",{self.generarObstaculo()})
+		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo()})
 		game.onTick(1000,"nuevaDecoracion",{self.generarDecoracion()})
 		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
-		game.onTick(8000,"nuevoObstaculoDer",{self.generarObstaculoDer()})
-		game.onTick(20000,"nuevoCochePremio",{self.generarCochePremio()})
+		game.onTick(3000,"nuevoObstaculoDer",{self.generarObstaculoDer()})
+		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio()})
 		game.width(13)
 		game.height(12)
 		game.addVisual(suelo)
 		game.addVisual(auto)
 		game.addVisual(vidas)
+		game.addVisual(combustible)
+		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
 		game.addVisual(miniAuto)
-		game.onTick(6000,"moverMiniAuto",{miniAuto.mover()})
+		game.onTick(5000,"moverMiniAuto",{miniAuto.mover()})
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
 		game.whenCollideDo(auto,{elemento => elemento.chocar()})
@@ -28,12 +30,23 @@ object juego{
 	method terminar(){
 		game.addVisual(gameOver)
 		obstaculos.forEach({o => o.detener()})
+		game.removeTickEvent("combustible")
 		game.removeTickEvent("moverMiniAuto")
 		game.removeTickEvent("nuevoObstaculo")
 		game.removeTickEvent("nuevaDecoracion")
 		game.removeTickEvent("nuevoObstaculoIzq")
 		game.removeTickEvent("nuevoObstaculoDer")
-		auto.chocar()
+		game.removeTickEvent("nuevoCochePremio")
+	}
+	method ganar(){
+		game.addVisual(felicitaciones)
+		obstaculos.forEach({o => o.detener()})
+		game.removeTickEvent("moverMiniAuto")
+		game.removeTickEvent("nuevoObstaculo")
+		game.removeTickEvent("nuevaDecoracion")
+		game.removeTickEvent("nuevoObstaculoIzq")
+		game.removeTickEvent("nuevoObstaculoDer")
+		game.removeTickEvent("nuevoCochePremio")
 	}
 	method generarObstaculo(){
 		const obsta = new Obstaculo()
@@ -67,6 +80,11 @@ object gameOver {
 	method text() = "GAME OVER"
 }
 
+object felicitaciones {
+	method position() = game.center()
+	method text() = "FELICITACIONES HAS GANADO"
+}
+
 class Decoracion {
 	var position = self.posicionInicial()
 	
@@ -91,7 +109,7 @@ class Decoracion {
 class Obstaculo {
 	var position = self.posicionInicial()
 
-	method image() = "autoObstaculo.png"
+	method image() = "camion.png"
 	method position() = position
 	method posicionInicial() = game.at((2..9).anyOne(),11)
 	method iniciar(){
@@ -135,16 +153,20 @@ class ObstaculoIzquierda inherits Obstaculo {
 		position = position.down(1)
 		if (position.y() == 7)
 			position = position.left(1)
+		if (position.y() == -1)
+			self.sacar()
 	}
 }
 
 class ObstaculoDerecha inherits Obstaculo {
-	override method image() = "camion.png"
+	override method image() = "autoObstaculo.png"
 	override method posicionInicial() = game.at((2..8).anyOne(),11)
 	override method mover(){
 		position = position.down(1)
 		if (position.y() == 7)
 			position = position.right(1)
+		if (position.y() == -1)
+			self.sacar()
 	}
 }
 	
@@ -184,7 +206,7 @@ object auto {
 		vidaRestantes = vidaRestantes - 1
 	}
 	method chocarPremio(){
-		vidaRestantes = vidaRestantes + 1
+		combustible.llenarCombustible()
 	}
 }
 
@@ -192,15 +214,27 @@ object miniAuto {
 	var property position = self.positionInicial()
 	
 	method image(){return "miniCar.png"}
-	method mover(){position = position.up(1)}
+	method mover(){
+		position = position.up(1)
+		if (position.y() == 11){juego.ganar()}
+	}
 	method positionInicial(){return game.at(12,0)}
 }
 
 object vidas {
 	var vidas = auto.vidaRestantes()
 	
-	method text() = "Vida restante:" + vidas.toString()
+	method text() = "VIDA: " + vidas.toString()
 	method position() = game.at(1, game.height()-1)
 	method actualizar(){vidas = auto.vidaRestantes()}
+}
+
+object combustible {
+	var combustible = 100
+	
+	method llenarCombustible(){combustible = 100}
+	method text() = "COMBUSTIBLE: " + combustible.toString()
+	method position() = game.at(1, game.height()-2)
+	method gastarCombustible() {combustible = combustible - 1}
 }
 
