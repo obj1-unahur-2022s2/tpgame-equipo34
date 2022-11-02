@@ -5,6 +5,7 @@ const velocidad = 250
 
 object juego{ 	
 	const property obstaculos = []
+	var property backgroundMusic = game.sound("soundtrack.mp3")
 	
 	method configurar(){
 		game.title("Road Fighter")
@@ -26,8 +27,14 @@ object juego{
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
 		game.whenCollideDo(auto,{elemento => elemento.chocar()})
+		backgroundMusic.shouldLoop(true)
+	    game.schedule(500,{ backgroundMusic.play()} )
 	}
 	method terminar(){
+		const sound = new Sound(file = "gameOverMusic.mp3")
+	    backgroundMusic.pause()
+	    sound.volume(0.5)
+	    sound.play()
 		game.addVisual(gameOver)
 		obstaculos.forEach({o => o.detener()})
 		game.removeTickEvent("combustible")
@@ -39,6 +46,10 @@ object juego{
 		game.removeTickEvent("nuevoCochePremio")
 	}
 	method ganar(){
+		const sound = new Sound(file = "winMusic.mp3")
+		backgroundMusic.pause()
+		sound.volume(0.5)
+		sound.play()
 		game.addVisual(felicitaciones)
 		obstaculos.forEach({o => o.detener()})
 		game.removeTickEvent("moverMiniAuto")
@@ -76,6 +87,7 @@ object juego{
 }
 
 object gameOver {
+	
 	method position() = game.center()
 	method text() = "GAME OVER"
 }
@@ -203,6 +215,10 @@ object auto {
 		else{self.position(self.position().left(1))}
 	}
 	method chocar(){
+		const sound = new Sound(file = "explosion.mp3")
+		sound.volume(0.5)
+		sound.play()
+		game.say(self,"¡Boom!")
 		vidaRestantes = vidaRestantes - 1
 	}
 	method chocarPremio(){
