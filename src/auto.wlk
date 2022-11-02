@@ -12,6 +12,7 @@ object juego{
 		game.onTick(500,"nuevaDecoracion",{self.generarDecoracion()})
 		game.onTick(2100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
 		game.onTick(8900,"nuevoObstaculoDer",{self.generarObstaculoDer()})
+		game.onTick(9000,"nuevoCochePremio",{self.generarCochePremio()})
 		game.width(13)
 		game.height(12)
 		game.addVisual(suelo)
@@ -41,6 +42,14 @@ object juego{
 		obsta.iniciar()
 		obstaculos.add(obsta)
 	}
+	
+	method generarCochePremio(){
+		const premio = new CochePremio()
+		premio.iniciar()
+		obstaculos.add(premio)
+	}
+	
+	
 	
 	method generarDecoracion(){
 		const deco = new Decoracion()
@@ -125,7 +134,9 @@ class Obstaculo {
 	}}
 	
 	
-	
+class CochePremio inherits 	ObstaculoIzquierda{
+	override method image()="bonu.png"
+}
 
 class ObstaculoIzquierda inherits Obstaculo {
 	override method image() = "autoObstaculo.png"
