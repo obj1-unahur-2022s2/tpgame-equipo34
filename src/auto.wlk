@@ -198,7 +198,7 @@ object miniMapa{
 
 object auto {
 	var property vivo = true
-	var property vidaRestantes = 3
+	var property vidaRestantes = 50
 	var property position = game.at(6,0)
 	
 	method estaVivo(){
