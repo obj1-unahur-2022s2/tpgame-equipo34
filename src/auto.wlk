@@ -3,7 +3,9 @@ import wollok.game.*
 const velocidad = 250
 
 
-object juego{ 	
+object juego{ 
+	
+		
 	const property obstaculos = []
 	var property backgroundMusic = game.sound("soundtrack.mp3")
 	
@@ -86,10 +88,12 @@ object juego{
 	}
 }
 
+
+
 object gameOver {
 	
-	method position() = game.center()
-	method text() = "GAME OVER"
+	method position() = game.at(2,4)
+	method image() = "gameover.png"
 }
 
 object felicitaciones {
@@ -194,7 +198,7 @@ object miniMapa{
 
 object auto {
 	var property vivo = true
-	var property vidaRestantes = 50
+	var property vidaRestantes = 3
 	var property position = game.at(6,0)
 	
 	method estaVivo(){
