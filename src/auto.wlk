@@ -129,10 +129,22 @@ class Obstaculo {
 
 class ObstaculoIzquierda inherits Obstaculo {
 	override method image() = "autoObstaculo.png"
+	override method posicionInicial() = game.at((3..9).anyOne(),11)
+	override method mover(){
+		position = position.down(1)
+		if (position.y() == 7)
+			position = position.left(1)
+	}
 	}
 
 class ObstaculoDerecha inherits Obstaculo {
 	override method image() = "camion.png"
+	override method posicionInicial() = game.at((2..8).anyOne(),11)
+	override method mover(){
+		position = position.down(1)
+		if (position.y() == 7)
+			position = position.right(1)
+	}
 	}
 	
 	
