@@ -9,10 +9,10 @@ object juego{
 	method configurar(){
 		game.title("Road Fighter")
 		game.onTick(3000,"nuevoObstaculo",{self.generarObstaculo()})
-		game.onTick(500,"nuevaDecoracion",{self.generarDecoracion()})
-		game.onTick(2100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
-		game.onTick(8900,"nuevoObstaculoDer",{self.generarObstaculoDer()})
-		game.onTick(9000,"nuevoCochePremio",{self.generarCochePremio()})
+		game.onTick(1000,"nuevaDecoracion",{self.generarDecoracion()})
+		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
+		game.onTick(8000,"nuevoObstaculoDer",{self.generarObstaculoDer()})
+		game.onTick(20000,"nuevoCochePremio",{self.generarCochePremio()})
 		game.width(13)
 		game.height(12)
 		game.addVisual(suelo)
@@ -25,7 +25,6 @@ object juego{
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
 		game.whenCollideDo(auto,{elemento => elemento.chocar()})
 	}
-	
 	method terminar(){
 		game.addVisual(gameOver)
 		obstaculos.forEach({o => o.detener()})
@@ -36,33 +35,26 @@ object juego{
 		game.removeTickEvent("nuevoObstaculoDer")
 		auto.chocar()
 	}
-	
 	method generarObstaculo(){
 		const obsta = new Obstaculo()
 		obsta.iniciar()
 		obstaculos.add(obsta)
 	}
-	
 	method generarCochePremio(){
 		const premio = new CochePremio()
 		premio.iniciar()
 		obstaculos.add(premio)
 	}
-	
-	
-	
 	method generarDecoracion(){
 		const deco = new Decoracion()
 		deco.iniciar()
 		obstaculos.add(deco)
 	}
-	
 	method generarObstaculoIzq(){
 		const obstaIzq = new ObstaculoIzquierda()
 		obstaIzq.iniciar()
 		obstaculos.add(obstaIzq)
 	}
-	
 	method generarObstaculoDer(){
 		const obstaDer = new ObstaculoDerecha()
 		obstaDer.iniciar()
@@ -70,12 +62,10 @@ object juego{
 	}
 }
 
-
 object gameOver {
 	method position() = game.center()
 	method text() = "GAME OVER"
 }
-
 
 class Decoracion {
 	var position = self.posicionInicial()
@@ -97,10 +87,6 @@ class Decoracion {
 		game.removeTickEvent("moverDecoracion")
 	}
 }
-
-
-
-
 
 class Obstaculo {
 	var position = self.posicionInicial()
@@ -131,11 +117,15 @@ class Obstaculo {
 	}
 	method detener(){
 		game.removeTickEvent("nuevoObstaculo")
-	}}
-	
-	
-class CochePremio inherits 	ObstaculoIzquierda{
+	}
+}
+		
+class CochePremio inherits 	Obstaculo{
 	override method image()="bonu.png"
+	override method chocar(){
+		auto.chocarPremio()
+		vidas.actualizar()
+	}
 }
 
 class ObstaculoIzquierda inherits Obstaculo {
@@ -146,7 +136,7 @@ class ObstaculoIzquierda inherits Obstaculo {
 		if (position.y() == 7)
 			position = position.left(1)
 	}
-	}
+}
 
 class ObstaculoDerecha inherits Obstaculo {
 	override method image() = "camion.png"
@@ -156,25 +146,17 @@ class ObstaculoDerecha inherits Obstaculo {
 		if (position.y() == 7)
 			position = position.right(1)
 	}
-	}
-	
-	
-	
-	
+}
 	
 object suelo{
 	method position() = game.origin()
 	method image() = "suelo.png"
 }
 
-
-
 object miniMapa{
 	method position() = game.at(12,0)
 	method image() = "miniMapa.png"
 }
-
-
 
 object auto {
 	var property vivo = true
@@ -186,28 +168,25 @@ object auto {
 		else{vivo = true}
 		return vivo
 	}
-	
 	method image(){
 	if(vivo){return "auto.png"}
 	else{return "explocion.png"}
 	}
-	
 	method moveteDerecha(){
 		if(position == game.at(9,0)){self.position(self.position().left(1))}
 		else{self.position(self.position().right(1))}
 	}
-	
 	method moveteIzquierda(){
 		if(position == game.at(2,0)){self.position(self.position().right(1))}
 		else{self.position(self.position().left(1))}
 	}
-	
 	method chocar(){
 		vidaRestantes = vidaRestantes - 1
 	}
+	method chocarPremio(){
+		vidaRestantes = vidaRestantes + 1
+	}
 }
-
-
 
 object miniAuto {
 	var property position = self.positionInicial()
@@ -216,8 +195,6 @@ object miniAuto {
 	method mover(){position = position.up(1)}
 	method positionInicial(){return game.at(12,0)}
 }
-
-
 
 object vidas {
 	var vidas = auto.vidaRestantes()
