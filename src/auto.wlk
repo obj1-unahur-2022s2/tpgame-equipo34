@@ -25,7 +25,7 @@ object juego{
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
 		game.addVisual(miniAuto)
-		game.onTick(5000,"moverMiniAuto",{miniAuto.mover()})
+		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
 		game.whenCollideDo(auto,{elemento => elemento.chocar()})
@@ -54,6 +54,7 @@ object juego{
 		sound.play()
 		game.addVisual(felicitaciones)
 		obstaculos.forEach({o => o.detener()})
+		game.removeTickEvent("combustible")
 		game.removeTickEvent("moverMiniAuto")
 		game.removeTickEvent("nuevoObstaculo")
 		game.removeTickEvent("nuevaDecoracion")
@@ -87,7 +88,6 @@ object juego{
 		obstaculos.add(obstaDer)
 	}
 }
-
 
 
 object gameOver {
@@ -199,7 +199,7 @@ object miniMapa{
 object auto {
 	var property vivo = true
 	var property vidaRestantes = 50
-	var property position = game.at(6,0)
+	var property position = game.at(6,1)
 	
 	method estaVivo(){
 		if(vidaRestantes <= 0){vivo = false}
@@ -236,7 +236,7 @@ object miniAuto {
 	method image(){return "miniCar.png"}
 	method mover(){
 		position = position.up(1)
-		if (position.y() == 11){juego.ganar()}
+		if (position.y() == 10){meta.iniciar()}
 	}
 	method positionInicial(){return game.at(12,0)}
 }
@@ -255,6 +255,28 @@ object combustible {
 	method llenarCombustible(){combustible = 100}
 	method text() = "COMBUSTIBLE: " + combustible.toString()
 	method position() = game.at(1, game.height()-2)
-	method gastarCombustible() {combustible = combustible - 1}
+	method gastarCombustible() {
+		if(combustible <= 0){juego.terminar()}
+		else{combustible = combustible - 1}
+	}
 }
 
+object meta{
+	var property position = self.positionInicial()
+	
+	method positionInicial(){return game.at(3,12)}
+	method image(){return "meta.png"}
+	method mover(){
+		position = position.down(1)
+		if (position.y() == 1){
+			juego.ganar()
+			game.removeTickEvent("moverMeta")
+		}
+	}
+	method iniciar(){
+		position = self.positionInicial()
+		game.addVisual(self)
+		game.onTick(velocidad,"moverMeta",{self.mover()})
+	}
+	method chocar(){}
+}
