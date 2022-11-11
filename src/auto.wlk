@@ -97,8 +97,8 @@ object gameOver {
 }
 
 object felicitaciones {
-	method position() = game.center()
-	method text() = "FELICITACIONES HAS GANADO"
+	method position() = game.at(3,5)
+	method image() = "ganaste.png"
 }
 
 class Decoracion {
@@ -157,8 +157,10 @@ class Obstaculo {
 class CochePremio inherits 	Obstaculo{
 	override method image()="bonu.png"
 	override method chocar(){
+		
 		auto.chocarPremio()
 		vidas.actualizar()
+	
 	}
 }
 
@@ -211,22 +213,22 @@ object auto {
 	else{return "explocion.png"}
 	}
 	method moveteDerecha(){
-		if(position == game.at(9,0)){self.position(self.position().left(1))}
+		if(position == game.at(9,1)){}
 		else{self.position(self.position().right(1))}
 	}
 	method moveteIzquierda(){
-		if(position == game.at(2,0)){self.position(self.position().right(1))}
+		if(position == game.at(2,1)){}
 		else{self.position(self.position().left(1))}
 	}
 	method chocar(){
 		const sound = new Sound(file = "explosion.mp3")
 		sound.volume(0.5)
 		sound.play()
-		game.say(self,"¡Boom!")
 		vidaRestantes = vidaRestantes - 1
 	}
 	method chocarPremio(){
 		combustible.llenarCombustible()
+		
 	}
 }
 
