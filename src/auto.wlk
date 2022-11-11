@@ -172,7 +172,7 @@ class ObstaculoIzquierda inherits Obstaculo {
 	override method posicionInicial() = game.at((3..9).anyOne(),11)
 	override method mover(){
 		position = position.down(1)
-		if (position.y() == 7)
+		if (position.y() == 5)
 			position = position.left(1)
 		if (position.y() == -1)
 			self.sacar()
@@ -184,9 +184,9 @@ class ObstaculoDerecha inherits Obstaculo {
 	override method posicionInicial() = game.at((2..8).anyOne(),11)
 	override method mover(){
 		position = position.down(1)
-		if (position.y() == 4)
+		if (position.y() == 4 and position.x() <9)
 			position = position.right(1)
-		else if (position.y()==6)
+		else if (position.y()==5)
 			position = position.right(1)
 		
 		if (position.y() == -1)
@@ -234,7 +234,9 @@ object auto {
 	}
 	method chocarPremio(){
 		combustible.llenarCombustible()
-		
+		const sound = new Sound(file = "cargaCombustible.mp3")
+		sound.volume(1)
+		sound.play()
 	}
 }
 
