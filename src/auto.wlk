@@ -12,9 +12,9 @@ object juego{
 	method configurar(){
 		game.title("Road Fighter")
 		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo()})
-		game.onTick(1000,"nuevaDecoracion",{self.generarDecoracion()})
+		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion()})
 		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
-		game.onTick(3000,"nuevoObstaculoDer",{self.generarObstaculoDer()})
+		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer()})
 		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio()})
 		game.width(13)
 		game.height(12)
@@ -135,8 +135,7 @@ class Obstaculo {
 	}
 	method mover(){
 		position = position.down(1)
-		if (position.y() == -1)
-			self.sacar()
+	
 	}
 	method chocar(){
 		auto.chocar()
@@ -155,14 +154,18 @@ class Obstaculo {
 }
 		
 class CochePremio inherits 	Obstaculo{
+	
+
 	override method image()="bonu.png"
 	override method chocar(){
 		
 		auto.chocarPremio()
 		vidas.actualizar()
-	
-	}
-}
+		game.removeVisual(self)
+		
+			
+	}}
+
 
 class ObstaculoIzquierda inherits Obstaculo {
 	override method image() = "autoObstaculo.png"
@@ -181,8 +184,11 @@ class ObstaculoDerecha inherits Obstaculo {
 	override method posicionInicial() = game.at((2..8).anyOne(),11)
 	override method mover(){
 		position = position.down(1)
-		if (position.y() == 7)
+		if (position.y() == 4)
 			position = position.right(1)
+		else if (position.y()==6)
+			position = position.right(1)
+		
 		if (position.y() == -1)
 			self.sacar()
 	}
