@@ -2,6 +2,6 @@ import wollok.game.*
 import auto.*
 
 program juego {
-	juego.configurar()
+	juego.configurar0()
 	game.start()
 }

@@ -9,15 +9,21 @@ object juego{
 	const property obstaculos = []
 	var property backgroundMusic = game.sound("soundtrack.mp3")
 	
-	method configurar(){
+	method configurar0(){
+		game.width(13)
+		game.height(12)
+		game.addVisual(menu)
+		keyboard.enter().onPressDo{self.configurar1()}
+		
+		}
+		method configurar1(){
 		game.title("Road Fighter")
 		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo()})
 		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion()})
 		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
 		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer()})
 		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio()})
-		game.width(13)
-		game.height(12)
+		
 		game.addVisual(suelo)
 		game.addVisual(auto)
 		game.addVisual(vidas)
@@ -193,7 +199,10 @@ class ObstaculoDerecha inherits Obstaculo {
 			self.sacar()
 	}
 }
-	
+object menu {
+	method position()=game.at(-3,0)
+	method image()="fondoMenu.jpg"
+}
 object suelo{
 	method position() = game.origin()
 	method image() = "suelo.png"
