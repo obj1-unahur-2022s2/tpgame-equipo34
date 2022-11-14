@@ -1,5 +1,5 @@
 import wollok.game.*
-
+import juego.*
 const velocidad = 250
 
 
