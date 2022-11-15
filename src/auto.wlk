@@ -4,10 +4,8 @@ const velocidad = 250
 
 
 object juego{ 
-	
-		
-	const property obstaculos = []
 	var property backgroundMusic = game.sound("soundtrack.mp3")
+	var property backgroundMusic2 = game.sound("musicaNivel2.mp3")
 	
 	method configurar0(){
 		game.width(13)
@@ -53,113 +51,83 @@ object juego{
 		game.addVisual(combustible)
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
-		game.addVisual(miniAuto)
-		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
+		game.addVisual(miniAutoNivel2)
+		game.onTick(3000,"moverMiniAuto",{miniAutoNivel2.mover()})
 		keyboard.left().onPressDo ({autoNivel2.moveteIzquierda()})	
 		keyboard.right().onPressDo ({autoNivel2.moveteDerecha()})
 		game.whenCollideDo(autoNivel2,{elemento => elemento.chocar()})
+		backgroundMusic2.shouldLoop(true)
+	    game.schedule(500,{ backgroundMusic2.play()} )
 	}
 	
 	
 	method terminar(){
+		game.clear()
 		const sound = new Sound(file = "gameOverMusic.mp3")
 	    backgroundMusic.pause()
 	    sound.volume(0.5)
 	    sound.play()
 		game.addVisual(gameOver)
-		obstaculos.forEach({o => o.detener()})
-		game.removeTickEvent("combustible")
-		game.removeTickEvent("moverMiniAuto")
-		game.removeTickEvent("nuevoObstaculo")
-		game.removeTickEvent("nuevaDecoracion")
-		game.removeTickEvent("nuevoObstaculoIzq")
-		game.removeTickEvent("nuevoObstaculoDer")
-		game.removeTickEvent("nuevoCochePremio")
 	}
 	method pasarNivel(){
-		const sound = new Sound(file = "winMusic.mp3")
+		game.clear()
 		backgroundMusic.pause()
+		const sound = new Sound(file = "winMusic.mp3")
 		sound.volume(0.5)
 		sound.play()
 		game.addVisual(siguienteNivel)
-		obstaculos.forEach({o => o.detener()})
-		game.removeTickEvent("combustible")
-		game.removeTickEvent("moverMiniAuto")
-		game.removeTickEvent("nuevoObstaculo")
-		game.removeTickEvent("nuevaDecoracion")
-		game.removeTickEvent("nuevoObstaculoIzq")
-		game.removeTickEvent("nuevoObstaculoDer")
-		game.removeTickEvent("nuevoCochePremio")
 		keyboard.i().onPressDo {
 			sound.pause()
-			game.clear()
 			self.configurar2()
-			
 		}
 	}
 	method ganar(){
+		game.clear()
+		backgroundMusic2.pause()
 		const sound = new Sound(file = "winMusic.mp3")
 		sound.volume(0.5)
 		sound.play()
 		game.addVisual(felicitaciones)
-		obstaculos.forEach({o => o.detener()})
-		game.removeTickEvent("combustible")
-		game.removeTickEvent("moverMiniAuto")
-		game.removeTickEvent("nuevoObstaculo")
-		game.removeTickEvent("nuevaDecoracion")
-		game.removeTickEvent("nuevoObstaculoIzq")
-		game.removeTickEvent("nuevoObstaculoDer")
-		game.removeTickEvent("nuevoCochePremio")
 	}
 	method generarObstaculo(){
 		const obsta = new Obstaculo()
 		obsta.iniciar()
-		obstaculos.add(obsta)
 	}
 	method generarObstaculoNivel2(){
 		const obsta = new ObstaculoNivel2()
 		obsta.iniciar()
-		obstaculos.add(obsta)
 	}
 	method generarCochePremio(){
 		const premio = new CochePremio()
 		premio.iniciar()
-		obstaculos.add(premio)
 	}
 	method generarCochePremioNivel2(){
 		const premio = new CochePremioNivel2()
 		premio.iniciar()
-		obstaculos.add(premio)
 	}
 	method generarDecoracion(){
 		const deco = new Decoracion()
 		deco.iniciar()
-		obstaculos.add(deco)
 	}
 	method generarDecoracionNivel2(){
 		const deco = new DecoracionNivel2()
 		deco.iniciar()
-		obstaculos.add(deco)
 	}
 	method generarObstaculoIzq(){
 		const obstaIzq = new ObstaculoIzquierda()
 		obstaIzq.iniciar()
-		obstaculos.add(obstaIzq)
 	}
 	method generarObstaculoIzqNivel2(){
 		const obstaIzq = new ObstaculoIzquierdaNivel2()
 		obstaIzq.iniciar()
-		obstaculos.add(obstaIzq)
 	}
 	method generarObstaculoDer(){
 		const obstaDer = new ObstaculoDerecha()
 		obstaDer.iniciar()
-		obstaculos.add(obstaDer)
 	}
 	method generarObstaculoDerNivel2(){
 		const obstaDer = new ObstaculoDerechaNivel2()
 		obstaDer.iniciar()
-		obstaculos.add(obstaDer)
 	}
 }
 
@@ -204,7 +172,7 @@ class Decoracion {
 class DecoracionNivel2 inherits Decoracion {
 	
 	override method image() = "decoracionNivel2Palmera.png"
-	override method posicionInicial() = game.at(0,11)
+	override method posicionInicial() = game.at(9,11)
 }
 
 class Obstaculo {
@@ -414,9 +382,27 @@ object miniAuto {
 	method mover(){
 		position = position.up(1)
 		if (position.y() == 10){meta.iniciar()}
-		if (position.y() == 12){position = self.positionInicial()}
+		if (position.y() == 11){self.sacar()}
 	}
 	method positionInicial(){return game.at(12,0)}
+	method sacar(){
+		game.removeVisual(self)
+	}
+}
+
+object miniAutoNivel2 {
+	var property position = self.positionInicial()
+	
+	method image(){return "miniCar.png"}
+	method mover(){
+		position = position.up(1)
+		if (position.y() == 10){metaNivel2.iniciar()}
+		if (position.y() == 11){self.sacar()}
+	}
+	method positionInicial(){return game.at(12,0)}
+	method sacar(){
+		game.removeVisual(self)
+	}
 }
 
 object vidas {
@@ -462,7 +448,7 @@ object meta{
 object metaNivel2{
 	var property position = self.positionInicial()
 	
-	method positionInicial(){return game.at(3,12)}
+	method positionInicial(){return game.at(5,12)}
 	method image(){return "meta.png"}
 	method mover(){
 		position = position.down(1)
