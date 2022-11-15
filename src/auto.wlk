@@ -98,13 +98,13 @@ object juego{
 
 object gameOver {
 	
-	method position() = game.at(2,4)
-	method image() = "gameover.png"
+	method position() = game.at(-4,0)
+	method image() = "gameOverScreen.png"
 }
 
 object felicitaciones {
-	method position() = game.at(3,5)
-	method image() = "ganaste.png"
+	method position()=game.at(-4,0)
+	method image() = "winScreen.png"
 }
 
 class Decoracion {
