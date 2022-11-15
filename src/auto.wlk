@@ -39,26 +39,25 @@ object juego{
 	}
 	
 	method configurar2(){
-		game.title("Road Fighter")
-		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo()})
-		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion()})
-		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
-		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer()})
-		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio()})
 		
-		game.addVisual(suelo)
-		game.addVisual(auto)
+		game.title("Road Fighter")
+		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculoNivel2()})
+		game.onTick(850,"nuevaDecoracion",{self.generarDecoracionNivel2()})
+		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzqNivel2()})
+		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDerNivel2()})
+		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremioNivel2()})
+		
+		game.addVisual(sueloNivel2)
+		game.addVisual(autoNivel2)
 		game.addVisual(vidas)
 		game.addVisual(combustible)
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
 		game.addVisual(miniAuto)
 		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
-		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
-		keyboard.right().onPressDo ({auto.moveteDerecha()})
-		game.whenCollideDo(auto,{elemento => elemento.chocar()})
-		backgroundMusic.shouldLoop(true)
-	    game.schedule(500,{ backgroundMusic.play()} )
+		keyboard.left().onPressDo ({autoNivel2.moveteIzquierda()})	
+		keyboard.right().onPressDo ({autoNivel2.moveteDerecha()})
+		game.whenCollideDo(autoNivel2,{elemento => elemento.chocar()})
 	}
 	
 	
@@ -77,9 +76,29 @@ object juego{
 		game.removeTickEvent("nuevoObstaculoDer")
 		game.removeTickEvent("nuevoCochePremio")
 	}
-	method ganar(){
+	method pasarNivel(){
 		const sound = new Sound(file = "winMusic.mp3")
 		backgroundMusic.pause()
+		sound.volume(0.5)
+		sound.play()
+		game.addVisual(siguienteNivel)
+		obstaculos.forEach({o => o.detener()})
+		game.removeTickEvent("combustible")
+		game.removeTickEvent("moverMiniAuto")
+		game.removeTickEvent("nuevoObstaculo")
+		game.removeTickEvent("nuevaDecoracion")
+		game.removeTickEvent("nuevoObstaculoIzq")
+		game.removeTickEvent("nuevoObstaculoDer")
+		game.removeTickEvent("nuevoCochePremio")
+		keyboard.i().onPressDo {
+			sound.pause()
+			game.clear()
+			self.configurar2()
+			
+		}
+	}
+	method ganar(){
+		const sound = new Sound(file = "winMusic.mp3")
 		sound.volume(0.5)
 		sound.play()
 		game.addVisual(felicitaciones)
@@ -156,6 +175,11 @@ object felicitaciones {
 	method image() = "winScreen.png"
 }
 
+object siguienteNivel {
+	method position()=game.at(0,0)
+	method image() = "nivel2.png"
+}
+
 class Decoracion {
 	var position = self.posicionInicial()
 	
@@ -180,7 +204,7 @@ class Decoracion {
 class DecoracionNivel2 inherits Decoracion {
 	
 	override method image() = "decoracionNivel2Palmera.png"
-	override method posicionInicial() = game.at(0,0)
+	override method posicionInicial() = game.at(0,11)
 }
 
 class Obstaculo {
@@ -298,7 +322,7 @@ object menu {
 }
 object suelo{
 	method position() = game.origin()
-	method image() = "sueloNivel2.png"
+	method image() = "suelo.png"
 }
 
 object sueloNivel2{
@@ -390,6 +414,7 @@ object miniAuto {
 	method mover(){
 		position = position.up(1)
 		if (position.y() == 10){meta.iniciar()}
+		if (position.y() == 12){position = self.positionInicial()}
 	}
 	method positionInicial(){return game.at(12,0)}
 }
@@ -415,6 +440,26 @@ object combustible {
 }
 
 object meta{
+	var property position = self.positionInicial()
+	
+	method positionInicial(){return game.at(3,12)}
+	method image(){return "meta.png"}
+	method mover(){
+		position = position.down(1)
+		if (position.y() == 1){
+			juego.pasarNivel()
+			game.removeTickEvent("moverMeta")
+		}
+	}
+	method iniciar(){
+		position = self.positionInicial()
+		game.addVisual(self)
+		game.onTick(velocidad,"moverMeta",{self.mover()})
+	}
+	method chocar(){}
+}
+
+object metaNivel2{
 	var property position = self.positionInicial()
 	
 	method positionInicial(){return game.at(3,12)}
