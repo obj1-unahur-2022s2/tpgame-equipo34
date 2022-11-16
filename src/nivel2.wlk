@@ -9,6 +9,11 @@ class DecoracionNivel2 inherits Decoracion {
 	
 	override method image() = "decoracionNivel2Palmera.png"
 	override method posicionInicial() = game.at(9,11)
+		override method mover(){
+		position = position.down(1)
+		if (position.y() == -3)
+			game.removeVisual(self)
+	}
 }
 
 
