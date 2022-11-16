@@ -67,7 +67,11 @@ object juego{
 	    backgroundMusic.pause()
 	    sound.volume(0.5)
 	    sound.play()
-		game.addVisual(gameOver)
+	    game.addVisual(gameOver)
+	    keyboard.s().onPressDo{
+	    	sound.pause()
+	    	game.clear()
+	    }
 	}
 	method pasarNivel(){
 		game.clear()
@@ -313,10 +317,7 @@ object auto {
 		else{vivo = true}
 		return vivo
 	}
-	method image(){
-	if(vivo){return "auto.png"}
-	else{return "explocion.png"}
-	}
+	method image(){return "auto.png"}
 	method moveteDerecha(){
 		if(position == game.at(9,1)){}
 		else{self.position(self.position().right(1))}
@@ -349,10 +350,7 @@ object autoNivel2 {
 		else{vivo = true}
 		return vivo
 	}
-	method image(){
-	if(vivo){return "auto.png"}
-	else{return "explocion.png"}
-	}
+	method image(){return "auto.png"}
 	method moveteDerecha(){
 		if(position == game.at(7,1)){}
 		else{self.position(self.position().right(1))}
@@ -434,7 +432,6 @@ object meta{
 		position = position.down(1)
 		if (position.y() == 1){
 			juego.pasarNivel()
-			game.removeTickEvent("moverMeta")
 		}
 	}
 	method iniciar(){
@@ -449,12 +446,11 @@ object metaNivel2{
 	var property position = self.positionInicial()
 	
 	method positionInicial(){return game.at(5,12)}
-	method image(){return "meta.png"}
+	method image(){return "meta2.png"}
 	method mover(){
 		position = position.down(1)
 		if (position.y() == 1){
 			juego.ganar()
-			game.removeTickEvent("moverMeta")
 		}
 	}
 	method iniciar(){
