@@ -69,8 +69,6 @@ object juego{
 		backgroundMusic2.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic2.play()} )
 	}
-	
-	
 	method terminar(){
 		//LIMPIAR 
 		game.clear()
@@ -112,7 +110,6 @@ object juego{
 	}
 	
 	//CREAR OBSTACULOS NIVEL 1
-	
 	method generarObstaculo(){
 		const obsta = new Obstaculo()
 		obsta.iniciar()
@@ -137,9 +134,6 @@ object juego{
 		const obstaDer = new ObstaculoDerecha()
 		obstaDer.iniciar()
 	}
-	
-	
-	
 	//CREAR OBSTACULOS NIVEL 2
 	method generarObstaculoDerNivel2(){
 		const obstaDer = new ObstaculoDerechaNivel2()
@@ -162,8 +156,6 @@ object juego{
 		premio.iniciar()
 	}
 }
-
-
 
 object gameOver {
 	
@@ -202,8 +194,6 @@ class Decoracion {
 	}
 }
 
-
-
 class Obstaculo {
 	var position = self.posicionInicial()
 
@@ -215,10 +205,7 @@ class Obstaculo {
 		game.addVisual(self)
 		game.onTick(velocidad,"nuevoObstaculo",{self.mover()})
 	}
-	method mover(){
-		position = position.down(1)
-	
-	}
+	method mover(){position = position.down(1)}
 	method chocar(){
 		auto.chocar()
 		vidas.actualizar()
@@ -272,10 +259,6 @@ class ObstaculoDerecha inherits Obstaculo {
 	}
 }
 
-
-
-
-
 object menu {
 	method position()=game.at(-3,0)
 	method image()="fondoMenu.jpg"
@@ -284,14 +267,10 @@ object suelo{
 	method position() = game.origin()
 	method image() = "suelo.png"
 }
-
-
-
 object miniMapa{
 	method position() = game.at(12,0)
 	method image() = "miniMapa.png"
 }
-
 object auto {
 	var property vivo = true
 	var property vidaRestantes = 50
@@ -325,8 +304,6 @@ object auto {
 	}
 }
 
-
-
 object miniAuto {
 	var property position = self.positionInicial()
 	
@@ -341,7 +318,6 @@ object miniAuto {
 		game.removeVisual(self)
 	}
 }
-
 
 object vidas {
 	var vidas = auto.vidaRestantes()

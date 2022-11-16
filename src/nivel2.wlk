@@ -1,10 +1,6 @@
 import auto.*
 import wollok.game.*
 
-
-
-	
-	
 class DecoracionNivel2 inherits Decoracion {
 	
 	override method image() = "decoracionNivel2Palmera.png"
@@ -16,15 +12,9 @@ class DecoracionNivel2 inherits Decoracion {
 	}
 }
 
-
-
-
 class ObstaculoNivel2 inherits Obstaculo {
 	override method posicionInicial() = game.at((5..7).anyOne(),11)
 }
-
-
-
 
 class CochePremioNivel2 inherits Obstaculo{
 	override method posicionInicial() = game.at((5..7).anyOne(),11)
@@ -35,10 +25,6 @@ class CochePremioNivel2 inherits Obstaculo{
 		game.removeVisual(self)		
 	}
 }
-
-
-
-
 
 class ObstaculoIzquierdaNivel2 inherits Obstaculo {
 	
@@ -52,8 +38,6 @@ class ObstaculoIzquierdaNivel2 inherits Obstaculo {
 	}
 }
 
-
-
 class ObstaculoDerechaNivel2 inherits Obstaculo {
 	override method image() = "autoObstaculo.png"
 	override method posicionInicial() = game.at((5..6).anyOne(),11)
@@ -65,8 +49,6 @@ class ObstaculoDerechaNivel2 inherits Obstaculo {
 			position = position.right(1)
 
 	}
-
-
 //CREAR OBSTACULOS NIVEL 2
 	method generarObstaculoDerNivel2(){
 		const obstaDer = new ObstaculoDerechaNivel2()
@@ -90,17 +72,11 @@ class ObstaculoDerechaNivel2 inherits Obstaculo {
 	}
 }
 
-
-
 object sueloNivel2{
 	method position() = game.origin()
 	method image() = "sueloNivel2.png"
 }
 
-	
-	
-
-	
 object miniAutoNivel2 {
 	var property position = self.positionInicial()
 	
@@ -115,9 +91,6 @@ object miniAutoNivel2 {
 		game.removeVisual(self)
 	}
 }
-
-
-
 
 object autoNivel2 {
 	var property vivo = true
@@ -152,10 +125,6 @@ object autoNivel2 {
 	}
 }
 
-
-
-
-
 	
 object metaNivel2{
 	var property position = self.positionInicial()
@@ -173,7 +142,6 @@ object metaNivel2{
 		game.addVisual(self)
 		game.onTick(velocidad,"moverMeta",{self.mover()})
 	}
-
 }
 
 	
