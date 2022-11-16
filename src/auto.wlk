@@ -1,26 +1,32 @@
 import wollok.game.*
 import juego.*
+import nivel2.*
 const velocidad = 250
 
 
 object juego{ 
+	//MUSICA DE FONDO
 	var property backgroundMusic = game.sound("soundtrack.mp3")
 	var property backgroundMusic2 = game.sound("musicaNivel2.mp3")
-	
+	//TAMAÑO DEL GAME 
 	method configurar0(){
 		game.width(13)
 		game.height(12)
+		//IMAGEN MENU
 		game.addVisual(menu)
+		//TECLADO
 		keyboard.enter().onPressDo{self.configurar1()}
 		}
 	method configurar1(){
+		//EVENTOS AUTOMATICOS
 		game.title("Road Fighter")
 		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo()})
 		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion()})
 		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
 		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer()})
 		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio()})
-		
+		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
+		//VISUALES
 		game.addVisual(suelo)
 		game.addVisual(auto)
 		game.addVisual(vidas)
@@ -28,33 +34,37 @@ object juego{
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
 		game.addVisual(miniAuto)
-		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
+		//TECLADO
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
+		//COLISION
 		game.whenCollideDo(auto,{elemento => elemento.chocar()})
 		backgroundMusic.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic.play()} )
 	}
 	
 	method configurar2(){
-		
+		// EVENTOS AUTOMATICOS
 		game.title("Road Fighter")
 		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculoNivel2()})
 		game.onTick(850,"nuevaDecoracion",{self.generarDecoracionNivel2()})
 		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzqNivel2()})
 		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDerNivel2()})
 		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremioNivel2()})
+		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
+		game.onTick(3000,"moverMiniAuto",{miniAutoNivel2.mover()})
 		
+		//VISUALES
 		game.addVisual(sueloNivel2)
 		game.addVisual(autoNivel2)
 		game.addVisual(vidas)
 		game.addVisual(combustible)
-		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
 		game.addVisual(miniAutoNivel2)
-		game.onTick(3000,"moverMiniAuto",{miniAutoNivel2.mover()})
+		//TECLADO
 		keyboard.left().onPressDo ({autoNivel2.moveteIzquierda()})	
 		keyboard.right().onPressDo ({autoNivel2.moveteDerecha()})
+		//COLISION
 		game.whenCollideDo(autoNivel2,{elemento => elemento.chocar()})
 		backgroundMusic2.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic2.play()} )
@@ -62,30 +72,37 @@ object juego{
 	
 	
 	method terminar(){
+		//LIMPIAR 
 		game.clear()
+		//DETENER MUSICA FONDO E INICIAR MUSICA "GAMEOVER"
 		const sound = new Sound(file = "gameOverMusic.mp3")
 	    backgroundMusic.pause()
 	    sound.volume(0.5)
 	    sound.play()
 	    game.addVisual(gameOver)
+	    //SALIR
 	    keyboard.s().onPressDo{
 	    	sound.pause()
 	    	game.clear()
 	    }
 	}
 	method pasarNivel(){
+		//LIMPIAR Y DETENER MUSICA
 		game.clear()
 		backgroundMusic.pause()
+		//IMAGEN NIVEL 2 Y MUSICA PLAY
 		const sound = new Sound(file = "winMusic.mp3")
 		sound.volume(0.5)
 		sound.play()
 		game.addVisual(siguienteNivel)
+		//PRESIONAR I PARA INICIAR NIVEL 2
 		keyboard.i().onPressDo {
 			sound.pause()
 			self.configurar2()
 		}
 	}
 	method ganar(){
+		//LIMPIAR, DETENER MUSICA FONDO E INICIAR MUSICA "WIN"
 		game.clear()
 		backgroundMusic2.pause()
 		const sound = new Sound(file = "winMusic.mp3")
@@ -93,47 +110,59 @@ object juego{
 		sound.play()
 		game.addVisual(felicitaciones)
 	}
+	
+	//CREAR OBSTACULOS NIVEL 1
+	
 	method generarObstaculo(){
 		const obsta = new Obstaculo()
 		obsta.iniciar()
 	}
-	method generarObstaculoNivel2(){
-		const obsta = new ObstaculoNivel2()
-		obsta.iniciar()
-	}
+
 	method generarCochePremio(){
 		const premio = new CochePremio()
 		premio.iniciar()
 	}
-	method generarCochePremioNivel2(){
-		const premio = new CochePremioNivel2()
-		premio.iniciar()
-	}
+
 	method generarDecoracion(){
 		const deco = new Decoracion()
 		deco.iniciar()
 	}
-	method generarDecoracionNivel2(){
-		const deco = new DecoracionNivel2()
-		deco.iniciar()
-	}
+
 	method generarObstaculoIzq(){
 		const obstaIzq = new ObstaculoIzquierda()
 		obstaIzq.iniciar()
 	}
-	method generarObstaculoIzqNivel2(){
-		const obstaIzq = new ObstaculoIzquierdaNivel2()
-		obstaIzq.iniciar()
-	}
+
 	method generarObstaculoDer(){
 		const obstaDer = new ObstaculoDerecha()
 		obstaDer.iniciar()
 	}
+	
+	
+	
+	//CREAR OBSTACULOS NIVEL 2
 	method generarObstaculoDerNivel2(){
 		const obstaDer = new ObstaculoDerechaNivel2()
 		obstaDer.iniciar()
 	}
+		method generarObstaculoNivel2(){
+		const obsta = new ObstaculoNivel2()
+		obsta.iniciar()
+	}
+		method generarObstaculoIzqNivel2(){
+		const obstaIzq = new ObstaculoIzquierdaNivel2()
+		obstaIzq.iniciar()
+	}
+		method generarDecoracionNivel2(){
+		const deco = new DecoracionNivel2()
+		deco.iniciar()
+	}
+		method generarCochePremioNivel2(){
+		const premio = new CochePremioNivel2()
+		premio.iniciar()
+	}
 }
+
 
 
 object gameOver {
@@ -173,11 +202,7 @@ class Decoracion {
 	}
 }
 
-class DecoracionNivel2 inherits Decoracion {
-	
-	override method image() = "decoracionNivel2Palmera.png"
-	override method posicionInicial() = game.at(9,11)
-}
+
 
 class Obstaculo {
 	var position = self.posicionInicial()
@@ -247,46 +272,9 @@ class ObstaculoDerecha inherits Obstaculo {
 	}
 }
 
-class ObstaculoNivel2 inherits Obstaculo {
-	override method posicionInicial() = game.at((5..7).anyOne(),11)
-}
 
-class CochePremioNivel2 inherits Obstaculo{
-	override method posicionInicial() = game.at((5..7).anyOne(),11)
-	override method image()="bonu.png"
-	override method chocar(){
-		auto.chocarPremio()
-		vidas.actualizar()
-		game.removeVisual(self)		
-	}
-}
 
-class ObstaculoIzquierdaNivel2 inherits Obstaculo {
-	override method image() = "autoObstaculo.png"
-	override method posicionInicial() = game.at((6..7).anyOne(),11)
-	override method mover(){
-		position = position.down(1)
-		if (position.y() == 5)
-			position = position.left(1)
-		if (position.y() == -1)
-			self.sacar()
-	}
-}
 
-class ObstaculoDerechaNivel2 inherits Obstaculo {
-	override method image() = "autoObstaculo.png"
-	override method posicionInicial() = game.at((5..6).anyOne(),11)
-	override method mover(){
-		position = position.down(1)
-		if (position.y() == 4 and position.x() <7)
-			position = position.right(1)
-		else if (position.y()==5)
-			position = position.right(1)
-		
-		if (position.y() == -1)
-			self.sacar()
-	}
-}
 
 object menu {
 	method position()=game.at(-3,0)
@@ -297,10 +285,7 @@ object suelo{
 	method image() = "suelo.png"
 }
 
-object sueloNivel2{
-	method position() = game.origin()
-	method image() = "sueloNivel2.png"
-}
+
 
 object miniMapa{
 	method position() = game.at(12,0)
@@ -340,38 +325,7 @@ object auto {
 	}
 }
 
-object autoNivel2 {
-	var property vivo = true
-	var property vidaRestantes = 50
-	var property position = game.at(6,1)
-	
-	method estaVivo(){
-		if(vidaRestantes <= 0){vivo = false}
-		else{vivo = true}
-		return vivo
-	}
-	method image(){return "auto.png"}
-	method moveteDerecha(){
-		if(position == game.at(7,1)){}
-		else{self.position(self.position().right(1))}
-	}
-	method moveteIzquierda(){
-		if(position == game.at(5,1)){}
-		else{self.position(self.position().left(1))}
-	}
-	method chocar(){
-		const sound = new Sound(file = "explosion.mp3")
-		sound.volume(0.5)
-		sound.play()
-		vidaRestantes = vidaRestantes - 1
-	}
-	method chocarPremio(){
-		combustible.llenarCombustible()
-		const sound = new Sound(file = "cargaCombustible.mp3")
-		sound.volume(1)
-		sound.play()
-	}
-}
+
 
 object miniAuto {
 	var property position = self.positionInicial()
@@ -388,20 +342,6 @@ object miniAuto {
 	}
 }
 
-object miniAutoNivel2 {
-	var property position = self.positionInicial()
-	
-	method image(){return "miniCar.png"}
-	method mover(){
-		position = position.up(1)
-		if (position.y() == 10){metaNivel2.iniciar()}
-		if (position.y() == 11){self.sacar()}
-	}
-	method positionInicial(){return game.at(12,0)}
-	method sacar(){
-		game.removeVisual(self)
-	}
-}
 
 object vidas {
 	var vidas = auto.vidaRestantes()
@@ -439,24 +379,6 @@ object meta{
 		game.addVisual(self)
 		game.onTick(velocidad,"moverMeta",{self.mover()})
 	}
-	method chocar(){}
+	
 }
 
-object metaNivel2{
-	var property position = self.positionInicial()
-	
-	method positionInicial(){return game.at(5,12)}
-	method image(){return "meta2.png"}
-	method mover(){
-		position = position.down(1)
-		if (position.y() == 1){
-			juego.ganar()
-		}
-	}
-	method iniciar(){
-		position = self.positionInicial()
-		game.addVisual(self)
-		game.onTick(velocidad,"moverMeta",{self.mover()})
-	}
-	method chocar(){}
-}
