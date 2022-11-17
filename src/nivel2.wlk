@@ -2,72 +2,9 @@ import auto.*
 import wollok.game.*
 
 
-class DecoracionNivel2 inherits Decoracion {
-	//IMAGEN PALMERAS CON SU MOVIMIENTO
-	override method image() = "decoracionNivel2Palmera.png"
-	override method posicionInicial() = game.at(9,11)
-	
-		override method mover(){
-		position = position.down(1)
-		if (position.y() == -4)
-			game.removeVisual(self)
-	}
-}
-//AUTOS OBSTACULOS
-class ObstaculoNivel2 inherits Obstaculo {
-	override method posicionInicial() = game.at((5..7).anyOne(),11)
-}
-//AUTOS BONUS "CARGA COMBUSTIBLE"
-class CochePremioNivel2 inherits Obstaculo{
-	override method posicionInicial() = game.at((5..7).anyOne(),11)
-	override method image()="bonu.png"
-	override method chocar(){
-		auto.chocarPremio()
-		vidas.actualizar()
-		game.removeVisual(self)		
-	}
-}
-//AUTOS OBSTACULO
-class ObstaculoIzquierdaNivel2 inherits ObstaculoIzquierda {
-	
-	override method image() = "autoObstaculo.png"
-	override method posicionInicial() = game.at((6..7).anyOne(),11)
-	
-			}
 
 
-class ObstaculoDerechaNivel2 inherits ObstaculoDerecha {
-	override method image() = "autoNivel2.png"
-	override method posicionInicial() = game.at((5..6).anyOne(),11)
-	override method mover(){
-		position = position.down(1)
-		if (position.y() == 4 and position.x() ==5)
-			position = position.right(1)
-	
 
-}
-//CREAR OBSTACULOS NIVEL 2
-	method generarObstaculoDerNivel2(){
-		const obstaDer = new ObstaculoDerechaNivel2()
-		obstaDer.iniciar()
-	}
-		method generarObstaculoNivel2(){
-		const obsta = new ObstaculoNivel2()
-		obsta.iniciar()
-	}
-		method generarObstaculoIzqNivel2(){
-		const obstaIzq = new ObstaculoIzquierdaNivel2()
-		obstaIzq.iniciar()
-	}
-		method generarDecoracionNivel2(){
-		const deco = new DecoracionNivel2()
-		deco.iniciar()
-	}
-		method generarCochePremioNivel2(){
-		const premio = new CochePremioNivel2()
-		premio.iniciar()
-	}
-}
 //ESCENARIO 
 object sueloNivel2{
 	method position() = game.origin()

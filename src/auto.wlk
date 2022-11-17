@@ -7,7 +7,7 @@ const velocidad = 250
 object juego{ 
 	//MUSICA DE FONDO
 	var property backgroundMusic = game.sound("soundtrack.mp3")
-	//var property backgroundMusic2 = game.sound("musicaNivel2.mp3")
+	
 	//TAMAÑO DEL GAME 
 	method configurar0(){
 		game.width(13)
@@ -18,16 +18,19 @@ object juego{
 		keyboard.enter().onPressDo{self.configurar1()}
 		}
 	method configurar1(){
+		const rangoDerPista = 9
+		const rangoIzqPista = 2
+		const imagenDecoracion = "arboldecoracion.png"
+		const unbicacionDecoracion = 0
 		//EVENTOS AUTOMATICOS
 		game.title("Road Fighter")
-		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo()})
-		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion()})
-		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq()})
-		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer()})
-		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio()})
+		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo(rangoDerPista, rangoIzqPista)})
+		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion(unbicacionDecoracion, imagenDecoracion)})
+		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq(rangoDerPista, rangoIzqPista)})
+		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer(rangoDerPista, rangoIzqPista)})
+		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
 		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
 		//VISUALES
-
 		game.addVisual(suelo)
 		auto.iniciar()
 		vidas.iniciar()
@@ -36,26 +39,29 @@ object juego{
 		game.addVisual(miniMapa)
 		miniAuto.iniciar()
 		//TECLADO
-		
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
 		//COLISION
 		game.whenCollideDo(auto,{elemento => elemento.chocar()})
+		//ACTIVAR MUSICA
 		backgroundMusic.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic.play()} )
 	}
 	
 	method configurar2(){
+		const rangoDerPista = 7
+		const rangoIzqPista = 5
+		const imagenDecoracion = "decoracionNivel2Palmera.png"
+		const unbicacionDecoracion = 9
 		// EVENTOS AUTOMATICOS
 		game.title("Road Fighter")
-		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculoNivel2()})
-		game.onTick(850,"nuevaDecoracion",{self.generarDecoracionNivel2()})
-		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzqNivel2()})
-		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDerNivel2()})
-		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremioNivel2()})
+		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo(rangoDerPista, rangoIzqPista)})
+		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion(unbicacionDecoracion,imagenDecoracion)})
+		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq(rangoDerPista, rangoIzqPista)})
+		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer(rangoDerPista, rangoIzqPista)})
+		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.onTick(3000,"moverMiniAuto",{miniAutoNivel2.mover()})
-		
 		//VISUALES
 		game.addVisual(sueloNivel2)
 		game.addVisual(autoNivel2)
@@ -68,6 +74,7 @@ object juego{
 		keyboard.right().onPressDo ({autoNivel2.moveteDerecha()})
 		//COLISION
 		game.whenCollideDo(autoNivel2,{elemento => elemento.chocar()})
+		//ACTIVAR MUSICA
 		backgroundMusic.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic.play()} )
 	}
@@ -119,46 +126,25 @@ object juego{
 	    }
 	}
 	//CREAR OBSTACULOS NIVEL 1
-	method generarObstaculo(){
-		const obsta = new Obstaculo()
+	method generarObstaculo(rangoDerPista, rangoIzqPista){
+		const obsta = new Obstaculo(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		obsta.iniciar()
 	}
-	method generarCochePremio(){
-		const premio = new CochePremio()
+	method generarCochePremio(rangoDerPista, rangoIzqPista){
+		const premio = new CochePremio(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		premio.iniciar()
 	}
-	method generarDecoracion(){
-		const deco = new Decoracion()
+	method generarDecoracion(ubicacion, imagenDecoracion){
+		const deco = new Decoracion(ubicacionDecoracion = ubicacion, imagen = imagenDecoracion)
 		deco.iniciar()
 	}
-	method generarObstaculoIzq(){
-		const obstaIzq = new ObstaculoIzquierda()
+	method generarObstaculoIzq(rangoDerPista, rangoIzqPista){
+		const obstaIzq = new ObstaculoIzquierda(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		obstaIzq.iniciar()
 	}
-	method generarObstaculoDer(){
-		const obstaDer = new ObstaculoDerecha()
+	method generarObstaculoDer(rangoDerPista, rangoIzqPista){
+		const obstaDer = new ObstaculoDerecha(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		obstaDer.iniciar()
-	}
-	//CREAR OBSTACULOS NIVEL 2
-	method generarObstaculoDerNivel2(){
-		const obstaDer = new ObstaculoDerechaNivel2()
-		obstaDer.iniciar()
-	}
-		method generarObstaculoNivel2(){
-		const obsta = new ObstaculoNivel2()
-		obsta.iniciar()
-	}
-		method generarObstaculoIzqNivel2(){
-		const obstaIzq = new ObstaculoIzquierdaNivel2()
-		obstaIzq.iniciar()
-	}
-		method generarDecoracionNivel2(){
-		const deco = new DecoracionNivel2()
-		deco.iniciar()
-	}
-		method generarCochePremioNivel2(){
-		const premio = new CochePremioNivel2()
-		premio.iniciar()
 	}
 }
 
@@ -179,11 +165,13 @@ object siguienteNivel {
 }
 
 class Decoracion {
+	var property ubicacionDecoracion
+	var property imagen
 	var position = self.posicionInicial()
 	
-	method image() = "arboldecoracion.png"
+	method image() = imagen
 	method position() = position
-	method posicionInicial() = game.at(0,11)
+	method posicionInicial() = game.at(ubicacionDecoracion,11)
 	method iniciar(){
 		position = self.posicionInicial()
 		game.addVisual(self)
@@ -200,11 +188,13 @@ class Decoracion {
 }
 
 class Obstaculo {
+	var derecha
+	var izquierda
 	var position = self.posicionInicial()
 
 	method image() = "camion.png"
 	method position() = position
-	method posicionInicial() = game.at((2..9).anyOne(),11)
+	method posicionInicial() = game.at((izquierda..derecha).anyOne(),11)
 	method iniciar(){
 		position = self.posicionInicial()
 		game.addVisual(self)
@@ -239,10 +229,9 @@ class CochePremio inherits 	Obstaculo{
 
 class ObstaculoIzquierda inherits Obstaculo {
 	override method image() = "autoObstaculo.png"
-	override method posicionInicial() = game.at((3..9).anyOne(),11)
 	override method mover(){
 		position = position.down(1)
-		if (position.y() == 5)
+		if (position.y() == 5 and position.x() != izquierda)
 			position = position.left(1)
 		if (position.y() == -1)
 			self.sacar()
@@ -251,14 +240,10 @@ class ObstaculoIzquierda inherits Obstaculo {
 
 class ObstaculoDerecha inherits Obstaculo {
 	override method image() = "autoObstaculo.png"
-	override method posicionInicial() = game.at((2..8).anyOne(),11)
 	override method mover(){
 		position = position.down(1)
-		if (position.y() == 4 and position.x() <9)
+		if (position.y() == 4 and position.x() != derecha )
 			position = position.right(1)
-		else if (position.y()==5)
-			position = position.right(1)
-		
 		if (position.y() == -1)
 			self.sacar()
 	}
