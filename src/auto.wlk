@@ -27,14 +27,16 @@ object juego{
 		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio()})
 		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
 		//VISUALES
+
 		game.addVisual(suelo)
-		game.addVisual(auto)
-		game.addVisual(vidas)
-		game.addVisual(combustible)
+		auto.iniciar()
+		vidas.iniciar()
+		combustible.iniciar()
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
-		game.addVisual(miniAuto)
+		miniAuto.iniciar()
 		//TECLADO
+		
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
 		//COLISION
@@ -69,19 +71,21 @@ object juego{
 		backgroundMusic2.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic2.play()} )
 	}
-	method terminar(){
+		method terminar(){
 		//LIMPIAR 
 		game.clear()
 		//DETENER MUSICA FONDO E INICIAR MUSICA "GAMEOVER"
 		const sound = new Sound(file = "gameOverMusic.mp3")
-	    backgroundMusic.pause()
+		
+	    backgroundMusic.stop()
+	    backgroundMusic2.stop()
 	    sound.volume(0.5)
 	    sound.play()
 	    game.addVisual(gameOver)
 	    //SALIR
 	    keyboard.s().onPressDo{
-	    	sound.pause()
-	    	game.clear()
+	    	sound.stop()
+	    	self.configurar0()
 	    }
 	}
 	method pasarNivel(){
@@ -109,6 +113,7 @@ object juego{
 		game.addVisual(felicitaciones)
 	}
 	
+	
 	//CREAR OBSTACULOS NIVEL 1
 	method generarObstaculo(){
 		const obsta = new Obstaculo()
@@ -125,6 +130,7 @@ object juego{
 		deco.iniciar()
 	}
 
+
 	method generarObstaculoIzq(){
 		const obstaIzq = new ObstaculoIzquierda()
 		obstaIzq.iniciar()
@@ -134,6 +140,8 @@ object juego{
 		const obstaDer = new ObstaculoDerecha()
 		obstaDer.iniciar()
 	}
+	
+	
 	//CREAR OBSTACULOS NIVEL 2
 	method generarObstaculoDerNivel2(){
 		const obstaDer = new ObstaculoDerechaNivel2()
@@ -169,7 +177,7 @@ object felicitaciones {
 }
 
 object siguienteNivel {
-	method position()=game.at(0,0)
+	method position()=game.at(0,-3)
 	method image() = "nivel2.png"
 }
 
@@ -193,6 +201,7 @@ class Decoracion {
 		game.removeTickEvent("moverDecoracion")
 	}
 }
+
 
 class Obstaculo {
 	var position = self.posicionInicial()
@@ -258,10 +267,14 @@ class ObstaculoDerecha inherits Obstaculo {
 			self.sacar()
 	}
 }
-
+object lineaCalle1 {
+	method position()=game.at(10,2)
+	method image()="linea.png"
+}
 object menu {
 	method position()=game.at(-3,0)
 	method image()="fondoMenu.jpg"
+	
 }
 object suelo{
 	method position() = game.origin()
@@ -275,6 +288,13 @@ object auto {
 	var property vivo = true
 	var property vidaRestantes = 50
 	var property position = game.at(6,1)
+	
+	method iniciar(){
+		game.addVisual(self)
+		vivo= true
+		vidaRestantes = 50
+		position = game.at(6,1)
+	}
 	
 	method estaVivo(){
 		if(vidaRestantes <= 0){vivo = false}
@@ -304,8 +324,15 @@ object auto {
 	}
 }
 
+
+
 object miniAuto {
-	var property position = self.positionInicial()
+	var property position= self.positionInicial() 
+	
+	method iniciar(){
+		position = self.positionInicial() 
+		game.addVisual(self)
+	}
 	
 	method image(){return "miniCar.png"}
 	method mover(){
@@ -319,8 +346,14 @@ object miniAuto {
 	}
 }
 
+
 object vidas {
-	var vidas = auto.vidaRestantes()
+	var vidas 
+	
+	method iniciar(){
+		vidas = 50
+		game.addVisual(self)
+	}
 	
 	method text() = "VIDA: " + vidas.toString()
 	method position() = game.at(1, game.height()-1)
@@ -329,6 +362,11 @@ object vidas {
 
 object combustible {
 	var combustible = 100
+	
+	method iniciar(){
+		combustible = 100
+		game.addVisual(self)
+	}
 	
 	method llenarCombustible(){combustible = 100}
 	method text() = "COMBUSTIBLE: " + combustible.toString()

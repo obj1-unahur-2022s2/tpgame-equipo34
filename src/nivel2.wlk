@@ -1,21 +1,23 @@
 import auto.*
 import wollok.game.*
 
+
 class DecoracionNivel2 inherits Decoracion {
-	
+	//IMAGEN PALMERAS CON SU MOVIMIENTO
 	override method image() = "decoracionNivel2Palmera.png"
 	override method posicionInicial() = game.at(9,11)
+	
 		override method mover(){
 		position = position.down(1)
-		if (position.y() == -3)
+		if (position.y() == -4)
 			game.removeVisual(self)
 	}
 }
-
+//AUTOS OBSTACULOS
 class ObstaculoNivel2 inherits Obstaculo {
 	override method posicionInicial() = game.at((5..7).anyOne(),11)
 }
-
+//AUTOS BONUS "COMBUSTIBLE"
 class CochePremioNivel2 inherits Obstaculo{
 	override method posicionInicial() = game.at((5..7).anyOne(),11)
 	override method image()="bonu.png"
@@ -25,30 +27,25 @@ class CochePremioNivel2 inherits Obstaculo{
 		game.removeVisual(self)		
 	}
 }
-
-class ObstaculoIzquierdaNivel2 inherits Obstaculo {
+//AUTOS OBSTACULO
+class ObstaculoIzquierdaNivel2 inherits ObstaculoIzquierda {
 	
 	override method image() = "autoObstaculo.png"
 	override method posicionInicial() = game.at((6..7).anyOne(),11)
-	override method mover(){
-		position = position.down(1)
-		if (position.y() == 5)
-			position = position.left(1)
-		
-	}
-}
+	
+			}
 
-class ObstaculoDerechaNivel2 inherits Obstaculo {
-	override method image() = "autoObstaculo.png"
+
+class ObstaculoDerechaNivel2 inherits ObstaculoDerecha {
+	override method image() = "autoNivel2.png"
 	override method posicionInicial() = game.at((5..6).anyOne(),11)
 	override method mover(){
 		position = position.down(1)
-		 if (position.y() == 4 and position.x() <7)
+		if (position.y() == 4 and position.x() ==5)
 			position = position.right(1)
-		else if (position.y()==5)
-			position = position.right(1)
+	
 
-	}
+}
 //CREAR OBSTACULOS NIVEL 2
 	method generarObstaculoDerNivel2(){
 		const obstaDer = new ObstaculoDerechaNivel2()
@@ -71,7 +68,7 @@ class ObstaculoDerechaNivel2 inherits Obstaculo {
 		premio.iniciar()
 	}
 }
-
+//ESCENARIO 
 object sueloNivel2{
 	method position() = game.origin()
 	method image() = "sueloNivel2.png"
@@ -80,7 +77,6 @@ object sueloNivel2{
 object miniAutoNivel2 {
 	var property position = self.positionInicial()
 	
-	method image(){return "miniCar.png"}
 	method mover(){
 		position = position.up(1)
 		if (position.y() == 10){metaNivel2.iniciar()}
@@ -91,11 +87,18 @@ object miniAutoNivel2 {
 		game.removeVisual(self)
 	}
 }
-
+//AUTO PROTAGONISTA
 object autoNivel2 {
 	var property vivo = true
 	var property vidaRestantes = 50
 	var property position = game.at(6,1)
+	
+	method iniciar(){
+		game.addVisual(self)
+		vivo= true
+		vidaRestantes = 50
+		position = game.at(6,1)
+	}
 	
 	method estaVivo(){
 		if(vidaRestantes <= 0){vivo = false}
@@ -107,16 +110,19 @@ object autoNivel2 {
 		if(position == game.at(7,1)){}
 		else{self.position(self.position().right(1))}
 	}
+	
 	method moveteIzquierda(){
 		if(position == game.at(5,1)){}
 		else{self.position(self.position().left(1))}
 	}
+	
 	method chocar(){
 		const sound = new Sound(file = "explosion.mp3")
 		sound.volume(0.5)
 		sound.play()
 		vidaRestantes = vidaRestantes - 1
 	}
+	
 	method chocarPremio(){
 		combustible.llenarCombustible()
 		const sound = new Sound(file = "cargaCombustible.mp3")
@@ -125,7 +131,7 @@ object autoNivel2 {
 	}
 }
 
-	
+//LINEA DE META
 object metaNivel2{
 	var property position = self.positionInicial()
 	
