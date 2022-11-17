@@ -77,6 +77,13 @@ object sueloNivel2{
 object miniAutoNivel2 {
 	var property position = self.positionInicial()
 	
+	method iniciar(){
+		position = self.positionInicial()
+		game.addVisual(self)
+	}
+	
+	method image(){return "miniCar.png"}
+	
 	method mover(){
 		position = position.up(1)
 		if (position.y() == 10){metaNivel2.iniciar()}

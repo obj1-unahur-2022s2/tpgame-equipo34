@@ -7,7 +7,7 @@ const velocidad = 250
 object juego{ 
 	//MUSICA DE FONDO
 	var property backgroundMusic = game.sound("soundtrack.mp3")
-	var property backgroundMusic2 = game.sound("musicaNivel2.mp3")
+	//var property backgroundMusic2 = game.sound("musicaNivel2.mp3")
 	//TAMAÑO DEL GAME 
 	method configurar0(){
 		game.width(13)
@@ -62,23 +62,22 @@ object juego{
 		game.addVisual(vidas)
 		game.addVisual(combustible)
 		game.addVisual(miniMapa)
-		game.addVisual(miniAutoNivel2)
+		miniAutoNivel2.iniciar()
 		//TECLADO
 		keyboard.left().onPressDo ({autoNivel2.moveteIzquierda()})	
 		keyboard.right().onPressDo ({autoNivel2.moveteDerecha()})
 		//COLISION
 		game.whenCollideDo(autoNivel2,{elemento => elemento.chocar()})
-		backgroundMusic2.shouldLoop(true)
-	    game.schedule(500,{ backgroundMusic2.play()} )
+		backgroundMusic.shouldLoop(true)
+	    game.schedule(500,{ backgroundMusic.play()} )
 	}
 		method terminar(){
 		//LIMPIAR 
 		game.clear()
 		//DETENER MUSICA FONDO E INICIAR MUSICA "GAMEOVER"
 		const sound = new Sound(file = "gameOverMusic.mp3")
-		
 	    backgroundMusic.stop()
-	    backgroundMusic2.stop()
+	    //backgroundMusic2.stop()
 	    sound.volume(0.5)
 	    sound.play()
 	    game.addVisual(gameOver)
@@ -91,26 +90,30 @@ object juego{
 	method pasarNivel(){
 		//LIMPIAR Y DETENER MUSICA
 		game.clear()
-		backgroundMusic.pause()
 		//IMAGEN NIVEL 2 Y MUSICA PLAY
 		const sound = new Sound(file = "winMusic.mp3")
+		backgroundMusic.stop()
 		sound.volume(0.5)
 		sound.play()
 		game.addVisual(siguienteNivel)
 		//PRESIONAR I PARA INICIAR NIVEL 2
 		keyboard.i().onPressDo {
-			sound.pause()
+			sound.stop()
 			self.configurar2()
 		}
 	}
 	method ganar(){
 		//LIMPIAR, DETENER MUSICA FONDO E INICIAR MUSICA "WIN"
 		game.clear()
-		backgroundMusic2.pause()
 		const sound = new Sound(file = "winMusic.mp3")
+		backgroundMusic.stop()
 		sound.volume(0.5)
 		sound.play()
 		game.addVisual(felicitaciones)
+		 keyboard.s().onPressDo{
+	    	sound.stop()
+	    	self.configurar0()
+	    }
 	}
 	
 	
@@ -267,10 +270,7 @@ class ObstaculoDerecha inherits Obstaculo {
 			self.sacar()
 	}
 }
-object lineaCalle1 {
-	method position()=game.at(10,2)
-	method image()="linea.png"
-}
+
 object menu {
 	method position()=game.at(-3,0)
 	method image()="fondoMenu.jpg"
