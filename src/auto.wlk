@@ -71,7 +71,7 @@ object juego{
 		backgroundMusic.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic.play()} )
 	}
-		method terminar(){
+	method terminar(){
 		//LIMPIAR 
 		game.clear()
 		//DETENER MUSICA FONDO E INICIAR MUSICA "GAMEOVER"
@@ -84,6 +84,7 @@ object juego{
 	    //SALIR
 	    keyboard.s().onPressDo{
 	    	sound.stop()
+	    	backgroundMusic = game.sound("soundtrack.mp3")
 	    	self.configurar0()
 	    }
 	}
@@ -99,6 +100,7 @@ object juego{
 		//PRESIONAR I PARA INICIAR NIVEL 2
 		keyboard.i().onPressDo {
 			sound.stop()
+			backgroundMusic = game.sound("soundtrack.mp3")
 			self.configurar2()
 		}
 	}
@@ -112,39 +114,31 @@ object juego{
 		game.addVisual(felicitaciones)
 		 keyboard.s().onPressDo{
 	    	sound.stop()
+	    	backgroundMusic = game.sound("soundtrack.mp3")
 	    	self.configurar0()
 	    }
 	}
-	
-	
 	//CREAR OBSTACULOS NIVEL 1
 	method generarObstaculo(){
 		const obsta = new Obstaculo()
 		obsta.iniciar()
 	}
-
 	method generarCochePremio(){
 		const premio = new CochePremio()
 		premio.iniciar()
 	}
-
 	method generarDecoracion(){
 		const deco = new Decoracion()
 		deco.iniciar()
 	}
-
-
 	method generarObstaculoIzq(){
 		const obstaIzq = new ObstaculoIzquierda()
 		obstaIzq.iniciar()
 	}
-
 	method generarObstaculoDer(){
 		const obstaDer = new ObstaculoDerecha()
 		obstaDer.iniciar()
 	}
-	
-	
 	//CREAR OBSTACULOS NIVEL 2
 	method generarObstaculoDerNivel2(){
 		const obstaDer = new ObstaculoDerechaNivel2()
@@ -204,7 +198,6 @@ class Decoracion {
 		game.removeTickEvent("moverDecoracion")
 	}
 }
-
 
 class Obstaculo {
 	var position = self.posicionInicial()
@@ -274,7 +267,6 @@ class ObstaculoDerecha inherits Obstaculo {
 object menu {
 	method position()=game.at(-3,0)
 	method image()="fondoMenu.jpg"
-	
 }
 object suelo{
 	method position() = game.origin()
@@ -295,7 +287,6 @@ object auto {
 		vidaRestantes = 50
 		position = game.at(6,1)
 	}
-	
 	method estaVivo(){
 		if(vidaRestantes <= 0){vivo = false}
 		else{vivo = true}
@@ -324,8 +315,6 @@ object auto {
 	}
 }
 
-
-
 object miniAuto {
 	var property position= self.positionInicial() 
 	
@@ -333,7 +322,6 @@ object miniAuto {
 		position = self.positionInicial() 
 		game.addVisual(self)
 	}
-	
 	method image(){return "miniCar.png"}
 	method mover(){
 		position = position.up(1)
@@ -354,7 +342,6 @@ object vidas {
 		vidas = 50
 		game.addVisual(self)
 	}
-	
 	method text() = "VIDA: " + vidas.toString()
 	method position() = game.at(1, game.height()-1)
 	method actualizar(){vidas = auto.vidaRestantes()}
@@ -367,7 +354,6 @@ object combustible {
 		combustible = 100
 		game.addVisual(self)
 	}
-	
 	method llenarCombustible(){combustible = 100}
 	method text() = "COMBUSTIBLE: " + combustible.toString()
 	method position() = game.at(1, game.height()-2)
@@ -393,6 +379,6 @@ object meta{
 		game.addVisual(self)
 		game.onTick(velocidad,"moverMeta",{self.mover()})
 	}
-	
 }
+
 
