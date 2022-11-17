@@ -181,13 +181,13 @@ object siguienteNivel {
 class Decoracion {
 	var position = self.posicionInicial()
 	
-	method image() = "arbolDecoracion.png"
+	method image() = "arboldecoracion.png"
 	method position() = position
 	method posicionInicial() = game.at(0,11)
 	method iniciar(){
 		position = self.posicionInicial()
 		game.addVisual(self)
-		game.onTick(velocidad,"moverDecoracion",{self.mover()})
+		game.onTick(velocidad/2,"moverDecoracion",{self.mover()})
 	}
 	method mover(){
 		position = position.down(1)
