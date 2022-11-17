@@ -17,7 +17,7 @@ class DecoracionNivel2 inherits Decoracion {
 class ObstaculoNivel2 inherits Obstaculo {
 	override method posicionInicial() = game.at((5..7).anyOne(),11)
 }
-//AUTOS BONUS "COMBUSTIBLE"
+//AUTOS BONUS "CARGA COMBUSTIBLE"
 class CochePremioNivel2 inherits Obstaculo{
 	override method posicionInicial() = game.at((5..7).anyOne(),11)
 	override method image()="bonu.png"
