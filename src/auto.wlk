@@ -1,6 +1,6 @@
 import wollok.game.*
 import juego.*
-import nivel2.*
+
 const velocidad = 250
 
 
@@ -31,6 +31,7 @@ object juego{
 		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
 		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
 		//VISUALES
+		const suelo = new Suelo(imagen = "suelo.png")
 		game.addVisual(suelo)
 		const auto = new Auto(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		auto.iniciar()
@@ -38,6 +39,7 @@ object juego{
 		combustible.iniciar()
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
+		const miniAuto = new MiniAuto(nivelFinal = false)
 		miniAuto.iniciar()
 		//TECLADO
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
@@ -64,13 +66,15 @@ object juego{
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.onTick(3000,"miniAutoNivelFinal",{miniAuto.mover()})
 		//VISUALES
-		game.addVisual(sueloNivel2)
+		const suelo = new Suelo(imagen = "sueloNivel2.png")
+		game.addVisual(suelo)
 		const auto = new Auto(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		auto.iniciar()
 		game.addVisual(vidas)
 		game.addVisual(combustible)
 		game.addVisual(miniMapa)
-		miniAutoNivelFinal.iniciar()
+		const miniAuto = new MiniAuto(nivelFinal = true)
+		miniAuto.iniciar()
 		//TECLADO
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
 		keyboard.right().onPressDo ({auto.moveteDerecha()})
@@ -86,7 +90,6 @@ object juego{
 		//DETENER MUSICA FONDO E INICIAR MUSICA "GAMEOVER"
 		const sound = new Sound(file = "gameOverMusic.mp3")
 	    backgroundMusic.stop()
-	    //backgroundMusic2.stop()
 	    sound.volume(0.5)
 	    sound.play()
 	    game.addVisual(gameOver)
@@ -127,7 +130,7 @@ object juego{
 	    	self.configurar0()
 	    }
 	}
-	//CREAR OBSTACULOS NIVEL 1
+	//CREAR OBSTACULOS
 	method generarObstaculo(rangoDerPista, rangoIzqPista){
 		const obsta = new Obstaculo(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		obsta.iniciar()
@@ -255,9 +258,11 @@ object menu {
 	method position()=game.at(-3,0)
 	method image()="fondoMenu.jpg"
 }
-object suelo{
+class Suelo{
+	const imagen 
+	
 	method position() = game.origin()
-	method image() = "suelo.png"
+	method image() = imagen //"suelo.png"
 }
 object miniMapa{
 	method position() = game.at(12,0)
@@ -304,8 +309,10 @@ class Auto {
 	}
 }
 
-object miniAuto {
-	var property position= self.positionInicial() 
+class MiniAuto {
+	var nivelFinal
+	var property position= self.positionInicial()
+	const meta = new Meta(final = nivelFinal) 
 	
 	method iniciar(){
 		position = self.positionInicial() 
@@ -314,26 +321,8 @@ object miniAuto {
 	method image(){return "miniCar.png"}
 	method mover(){
 		position = position.up(1)
-		if (position.y() == 10){meta.iniciar()}
-		if (position.y() == 11){self.sacar()}
-	}
-	method positionInicial(){return game.at(12,0)}
-	method sacar(){
-		game.removeVisual(self)
-	}
-}
-
-object miniAutoNivelFinal {
-	var property position = self.positionInicial()
-	
-	method iniciar(){
-		position = self.positionInicial()
-		game.addVisual(self)
-	}
-	method image(){return "miniCar.png"}
-	method mover(){
-		position = position.up(1)
-		if (position.y() == 10){metaNivelFinal.iniciar()}
+		if (position.y() == 10 and nivelFinal){meta.iniciar()}
+		else if (position.y() == 10){meta.iniciar()}
 		if (position.y() == 11){self.sacar()}
 	}
 	method positionInicial(){return game.at(12,0)}
@@ -370,16 +359,16 @@ object combustible {
 	}
 }
 
-object meta{
+class Meta{
+	const final
 	var property position = self.positionInicial()
 	
 	method positionInicial(){return game.at(3,12)}
 	method image(){return "meta.png"}
 	method mover(){
 		position = position.down(1)
-		if (position.y() == 1){
-			juego.pasarNivel()
-		}
+		if (position.y() == 1 and final){juego.ganar()}
+		else if (position.y() == 1){juego.pasarNivel()}
 	}
 	method iniciar(){
 		position = self.positionInicial()
@@ -388,21 +377,5 @@ object meta{
 	}
 }
 
-object metaNivelFinal{
-	var property position = self.positionInicial()
-	
-	method positionInicial(){return game.at(5,12)}
-	method image(){return "meta2.png"}
-	method mover(){
-		position = position.down(1)
-		if (position.y() == 1){
-			juego.ganar()
-		}
-	}
-	method iniciar(){
-		position = self.positionInicial()
-		game.addVisual(self)
-		game.onTick(velocidad,"moverMeta",{self.mover()})
-	}
-}
+
 
