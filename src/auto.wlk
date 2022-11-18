@@ -21,7 +21,10 @@ object juego{
 		const rangoDerPista = 9
 		const rangoIzqPista = 2
 		const imagenDecoracion = "arboldecoracion.png"
+		const imagenSuelo = "suelo.png"
 		const unbicacionDecoracion = 0
+		const esNivelFinal = false
+		
 		//EVENTOS AUTOMATICOS
 		game.title("Road Fighter")
 		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo(rangoDerPista, rangoIzqPista)})
@@ -31,7 +34,7 @@ object juego{
 		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
 		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
 		//VISUALES
-		const suelo = new Suelo(imagen = "suelo.png")
+		const suelo = new Suelo(imagen = imagenSuelo)
 		game.addVisual(suelo)
 		const auto = new Auto(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		auto.iniciar()
@@ -39,7 +42,7 @@ object juego{
 		combustible.iniciar()
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
-		const miniAuto = new MiniAuto(nivelFinal = false)
+		const miniAuto = new MiniAuto(nivelFinal = esNivelFinal)
 		miniAuto.iniciar()
 		//TECLADO
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
@@ -55,7 +58,10 @@ object juego{
 		const rangoDerPista = 7
 		const rangoIzqPista = 5
 		const imagenDecoracion = "decoracionNivel2Palmera.png"
+		const imagenSuelo = "sueloNivel2.png"
 		const unbicacionDecoracion = 9
+		const esNivelFinal = true
+		
 		// EVENTOS AUTOMATICOS
 		game.title("Road Fighter")
 		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo(rangoDerPista, rangoIzqPista)})
@@ -66,14 +72,14 @@ object juego{
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.onTick(3000,"miniAutoNivelFinal",{miniAuto.mover()})
 		//VISUALES
-		const suelo = new Suelo(imagen = "sueloNivel2.png")
+		const suelo = new Suelo(imagen = imagenSuelo)
 		game.addVisual(suelo)
 		const auto = new Auto(derecha = rangoDerPista, izquierda = rangoIzqPista)
 		auto.iniciar()
 		game.addVisual(vidas)
 		game.addVisual(combustible)
 		game.addVisual(miniMapa)
-		const miniAuto = new MiniAuto(nivelFinal = true)
+		const miniAuto = new MiniAuto(nivelFinal = esNivelFinal)
 		miniAuto.iniciar()
 		//TECLADO
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
@@ -321,8 +327,7 @@ class MiniAuto {
 	method image(){return "miniCar.png"}
 	method mover(){
 		position = position.up(1)
-		if (position.y() == 10 and nivelFinal){meta.iniciar()}
-		else if (position.y() == 10){meta.iniciar()}
+		if (position.y() == 10){meta.iniciar()}
 		if (position.y() == 11){self.sacar()}
 	}
 	method positionInicial(){return game.at(12,0)}
