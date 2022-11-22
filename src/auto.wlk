@@ -42,7 +42,7 @@ object juego{
 		combustible.iniciar()
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.addVisual(miniMapa)
-		const miniAuto = new MiniAuto(nivelFinal = esNivelFinal)
+		const miniAuto = new MiniAuto(nivelFinal = esNivelFinal, izquierda = rangoIzqPista)
 		miniAuto.iniciar()
 		//TECLADO
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
@@ -79,7 +79,7 @@ object juego{
 		game.addVisual(vidas)
 		game.addVisual(combustible)
 		game.addVisual(miniMapa)
-		const miniAuto = new MiniAuto(nivelFinal = esNivelFinal)
+		const miniAuto = new MiniAuto(nivelFinal = esNivelFinal, izquierda = rangoIzqPista)
 		miniAuto.iniciar()
 		//TECLADO
 		keyboard.left().onPressDo ({auto.moveteIzquierda()})	
@@ -316,9 +316,10 @@ class Auto {
 }
 
 class MiniAuto {
-	var nivelFinal
+	const izquierda
+	const nivelFinal
 	var property position= self.positionInicial()
-	const meta = new Meta(final = nivelFinal) 
+	const meta = new Meta(final = nivelFinal, posMeta = izquierda) 
 	
 	method iniciar(){
 		position = self.positionInicial() 
@@ -365,11 +366,15 @@ object combustible {
 }
 
 class Meta{
+	const posMeta
 	const final
 	var property position = self.positionInicial()
 	
-	method positionInicial(){return game.at(3,12)}
-	method image(){return "meta.png"}
+	method positionInicial(){return game.at(posMeta,12)}
+	method image(){
+		if(final){return "meta2.png"}
+		else {return "meta.png"}
+	}
 	method mover(){
 		position = position.down(1)
 		if (position.y() == 1 and final){juego.ganar()}
