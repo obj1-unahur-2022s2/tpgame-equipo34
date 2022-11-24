@@ -64,13 +64,6 @@ object juego{
 		
 		// EVENTOS AUTOMATICOS
 		game.title("Road Fighter")
-		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo(rangoDerPista, rangoIzqPista)})
-		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion(unbicacionDecoracion,imagenDecoracion)})
-		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq(rangoDerPista, rangoIzqPista)})
-		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer(rangoDerPista, rangoIzqPista)})
-		game.onTick(5000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
-		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
-		game.onTick(3000,"miniAutoNivelFinal",{miniAuto.mover()})
 		//VISUALES
 		const suelo = new Suelo(imagen = imagenSuelo)
 		game.addVisual(suelo)
@@ -89,6 +82,13 @@ object juego{
 		//ACTIVAR MUSICA
 		backgroundMusic.shouldLoop(true)
 	    game.schedule(500,{ backgroundMusic.play()} )
+		game.onTick(8000,"nuevoObstaculo",{self.generarObstaculo(rangoDerPista, rangoIzqPista)})
+		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion(unbicacionDecoracion,imagenDecoracion)})
+		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq(rangoDerPista, rangoIzqPista)})
+		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer(rangoDerPista, rangoIzqPista)})
+		game.onTick(5000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
+		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
+		game.onTick(3000,"miniAutoNivelFinal",{miniAuto.mover()})
 	}
 	method terminar(){
 		//LIMPIAR 
