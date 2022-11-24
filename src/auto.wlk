@@ -1,7 +1,7 @@
 import wollok.game.*
 import juego.*
 
-const velocidad = 250
+const velocidad = 100
 
 
 object juego{ 
@@ -31,7 +31,7 @@ object juego{
 		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion(unbicacionDecoracion, imagenDecoracion)})
 		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq(rangoDerPista, rangoIzqPista)})
 		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer(rangoDerPista, rangoIzqPista)})
-		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
+		game.onTick(5000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
 		game.onTick(3000,"moverMiniAuto",{miniAuto.mover()})
 		//VISUALES
 		const suelo = new Suelo(imagen = imagenSuelo)
@@ -59,7 +59,7 @@ object juego{
 		const rangoIzqPista = 5
 		const imagenDecoracion = "decoracionNivel2Palmera.png"
 		const imagenSuelo = "sueloNivel2.png"
-		const unbicacionDecoracion = 9
+		const unbicacionDecoracion = 10
 		const esNivelFinal = true
 		
 		// EVENTOS AUTOMATICOS
@@ -68,7 +68,7 @@ object juego{
 		game.onTick(850,"nuevaDecoracion",{self.generarDecoracion(unbicacionDecoracion,imagenDecoracion)})
 		game.onTick(3100,"nuevoObstaculoIzq",{self.generarObstaculoIzq(rangoDerPista, rangoIzqPista)})
 		game.onTick(3500,"nuevoObstaculoDer",{self.generarObstaculoDer(rangoDerPista, rangoIzqPista)})
-		game.onTick(10000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
+		game.onTick(5000,"nuevoCochePremio",{self.generarCochePremio(rangoDerPista, rangoIzqPista)})
 		game.onTick(velocidad,"combustible",{combustible.gastarCombustible()})
 		game.onTick(3000,"miniAutoNivelFinal",{miniAuto.mover()})
 		//VISUALES
